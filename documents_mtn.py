@@ -26,6 +26,7 @@ MALADIES_VALIDES = {
     "ems",
     "schistosomiase",
     "ulcere de buruli",
+    "noma",
 }
 
 CATEGORIES_REQUISES = {
@@ -521,5 +522,51 @@ Il ne faut pas percer la lésion, utiliser des produits traditionnels sur la pla
 """,
         "source": "OMS / guide de santé publique",
         "date_maj": "2026-08-08",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "definition",
+        "contenu": """
+Le noma est une maladie infectieuse grave qui détruit rapidement les tissus de la bouche et du visage.
+Il touche surtout les enfants fragilisés par la malnutrition ou une autre maladie et nécessite une prise en charge médicale urgente.
+""",
+        "source": "OMS / guide de santé publique",
+        "date_maj": "2026-08-23",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "transmission",
+        "contenu": """
+Le noma n'est pas considéré comme une maladie contagieuse. Il survient surtout chez des personnes fragilisées lorsque des bactéries présentes dans la bouche profitent d'une mauvaise santé générale.
+""",
+        "source": "OMS / guide de santé publique",
+        "date_maj": "2026-08-23",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "symptomes",
+        "contenu": """
+Les signes du noma peuvent inclure une inflammation des gencives, une douleur ou une mauvaise haleine, puis une lésion qui s'étend rapidement dans la bouche et le visage.
+""",
+        "source": "OMS / guide de santé publique",
+        "date_maj": "2026-08-23",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "prevention",
+        "contenu": """
+La prévention du noma repose sur une alimentation suffisante, une bonne hygiène bucco-dentaire, l'accès aux soins et le traitement rapide des infections et de la malnutrition.
+""",
+        "source": "OMS / guide de santé publique",
+        "date_maj": "2026-08-23",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "conduite",
+        "contenu": """
+Toute lésion ou inflammation qui progresse rapidement dans la bouche ou le visage doit être considérée comme une urgence. Consultez immédiatement un professionnel de santé.
+""",
+        "source": "OMS / guide de santé publique",
+        "date_maj": "2026-08-23",
     },
 ]

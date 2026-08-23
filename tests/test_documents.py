@@ -118,6 +118,7 @@ class TestContenuDocumentaire:
     "ems",
     "schistosomiase",
     "ulcere de buruli",
+    "noma",
 ])
 def test_maladie_a_definition(maladie):
     """Test paramétrisé : chaque maladie doit avoir une définition"""
@@ -132,6 +133,7 @@ def test_maladie_a_definition(maladie):
     "ems",
     "schistosomiase",
     "ulcere de buruli",
+    "noma",
 ])
 def test_maladie_a_symptomes(maladie):
     """Test paramétrisé : chaque maladie doit avoir des symptômes"""
