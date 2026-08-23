@@ -91,6 +91,7 @@ class TestObtenirReponse:
         ("Lèpre", "lepre"),
         ("Dengue", "dengue"),
         ("Schistosomiase", "schistosomiase"),
+        ("Noma", "noma"),
     ],
 )
 def test_recherche_maladies(question, maladie_attendue):
