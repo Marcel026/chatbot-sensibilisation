@@ -1,4 +1,4 @@
-# 🩺 Assistant MTN - Sensibilisation aux Maladies Tropicales Négligées
+# 🩺 Sensibilisation sur les Maladies Tropicales Négligées
 
 Application Streamlit pour l'éducation et la sensibilisation aux **Maladies Tropicales Négligées (MTN)** : lèpre, dengue, envenimations par morsure de serpent (EMS), schistosomiase, ulcère de Buruli et noma.
 

@@ -9,7 +9,7 @@ from rag_mtn import obtenir_reponse, rechercher_information
 # Configuration Streamlit
 # ========================
 st.set_page_config(
-    page_title="Sensibilisation aux MTN",
+    page_title="Sensibilisation sur les Maladies Tropicales Négligées",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -20,7 +20,7 @@ st.set_page_config(
 # ========================
 
 MESSAGES_FR = {
-    "titre": "🩺 Sensibilisation aux MTN",
+    "titre": "🩺 Sensibilisation sur les Maladies Tropicales Négligées",
     "description": (
         "Posez vos questions sur les maladies tropicales négligées (MTN), "
         "leurs symptômes, leur prévention, les signes d'alerte et la conduite à tenir."
