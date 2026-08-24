@@ -29,13 +29,8 @@ MALADIES_VALIDES = {
     "noma",
 }
 
-CATEGORIES_REQUISES = {
-    "definition",
-    "transmission",
-    "symptomes",
-    "prevention",
-    "conduite",
-}
+# Toutes les catégories autorisées sont obligatoires pour chaque maladie.
+CATEGORIES_REQUISES = CATEGORIES_VALIDES.copy()
 
 
 def valider_documents(documents=None):

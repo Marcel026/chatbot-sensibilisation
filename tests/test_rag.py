@@ -84,6 +84,14 @@ class TestObtenirReponse:
         # La réponse doit être fournie
         assert len(response) > 10
 
+    def test_categorie_absente_signalee(self):
+        """Signale l'absence d'une catégorie pour une maladie connue."""
+        results = rechercher_information(
+            "Quels sont les gestes interdits pour la dengue ?"
+        )
+        assert results[0]["categorie"] == "information_absente"
+        assert "n'est pas disponible" in results[0]["contenu"]
+
 
 @pytest.mark.parametrize(
     "question,maladie_attendue",
