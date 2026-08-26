@@ -353,6 +353,24 @@ def rechercher_information(question, top_k=3):
             "score": 0.0
         }]
 
+    if maladie_detectee and categorie_attendue:
+        categories_disponibles = {
+            chunk["categorie"]
+            for chunk in chunks
+            if chunk["maladie"] == maladie_detectee
+        }
+        if categorie_attendue not in categories_disponibles:
+            return [{
+                "maladie": maladie_detectee,
+                "categorie": "information_absente",
+                "contenu": (
+                    f"L'information sur la catégorie « {categorie_attendue} » "
+                    f"n'est pas disponible pour la maladie « {maladie_detectee} » "
+                    "dans ma base documentaire."
+                ),
+                "score": 0.0
+            }]
+
     # =========================
     # BOOSTERS DE CATÉGORIE (REFACTORISÉS)
     # =========================
