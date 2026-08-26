@@ -548,6 +548,33 @@ Les signes du noma peuvent inclure une inflammation des gencives, une douleur ou
     },
     {
         "maladie": "noma",
+        "categorie": "signes_alerte",
+        "contenu": """
+Chez un enfant, une gingivite douloureuse et très inflammatoire, des gencives qui saignent facilement, une mauvaise haleine intense, une ulcération ou une nécrose de la gencive doivent alerter, surtout en présence de malnutrition ou d'une maladie récente. L'apparition rapide d'un gonflement du visage, de la joue ou des lèvres, d'une zone sombre ou nécrosée dans la bouche, d'un écoulement malodorant, d'une douleur importante, d'un trismus ou d'une difficulté à ouvrir la bouche est très préoccupante. Une lésion qui s'étend rapidement vers la joue, la peau, le nez, les lèvres ou les yeux, ainsi qu'une perforation de la joue ou un trou dans le visage, évoque un noma avancé. La fièvre, l'abattement marqué, l'incapacité à boire ou à manger, les signes de déshydratation, les difficultés à avaler, les fausses routes ou toute gêne respiratoire sont des signes d'urgence. En cas de suspicion, il faut orienter immédiatement la personne vers une structure de santé pour évaluation et traitement, sans attendre l'évolution spontanée de la lésion.
+""",
+        "source": "OMS, « Noma », fiche d'information, https://www.who.int/news-room/fact-sheets/detail/noma ; OMS/AFRO, Information brochure for early detection and management of noma, https://www.afro.who.int/publications/information-brochure-early-detection-and-management-noma",
+        "date_maj": "2026-08-26",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "facteurs_risque",
+        "contenu": """
+Le noma survient surtout chez les jeunes enfants, principalement entre 2 et 6 ans, vivant dans des conditions d'extrême pauvreté. Les principaux facteurs associés sont la malnutrition, notamment la malnutrition aiguë ou chronique, les carences nutritionnelles, une mauvaise hygiène bucco-dentaire, la gingivite, l'absence ou l'insuffisance d'accès aux soins, une couverture vaccinale insuffisante et des infections récentes ou concomitantes telles que la rougeole, le paludisme, les infections respiratoires ou la diarrhée. Une immunodépression, notamment liée au VIH ou à d'autres maladies, peut également favoriser la survenue du noma. Ces facteurs sont généralement associés entre eux ; la présence d'un facteur isolé ne permet pas de poser le diagnostic.
+""",
+        "source": "OMS, « Noma », fiche d'information, https://www.who.int/news-room/fact-sheets/detail/noma ; Farley E, Mehta U, Srour ML, Lenglet A. Noma (cancrum oris): a scoping literature review of a neglected disease (1843 to 2021). PLoS Negl Trop Dis. 2021;15(12):e0009844. https://doi.org/10.1371/journal.pntd.0009844",
+        "date_maj": "2026-08-26",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "gravite",
+        "contenu": """
+Le noma est une maladie gangréneuse sévère et rapidement progressive de la bouche et du visage. Il débute généralement par une inflammation ou une lésion de la gencive, puis peut évoluer vers une gingivite ulcéro-nécrosante, un œdème, une gangrène et une destruction des tissus mous, de la peau et parfois des os du visage. Sans traitement rapide, l'évolution peut entraîner une septicémie, une déshydratation sévère, une malnutrition aggravée, une pneumonie d'inhalation, une insuffisance respiratoire ou la mort. L'OMS rapporte une ancienne estimation de létalité d'environ 90 %, tout en précisant que cette mortalité peut être fortement réduite par un traitement précoce. Les survivants peuvent présenter des séquelles durables : mutilation faciale, trismus, difficultés à manger, boire, parler, respirer ou voir, ainsi que des conséquences psychologiques et sociales. La présence de gangrène, d'une perforation faciale, d'un trismus ou de difficultés respiratoires ou de déglutition correspond à une situation de grande gravité.
+""",
+        "source": "OMS, « Noma », fiche d'information, https://www.who.int/news-room/fact-sheets/detail/noma ; OMS/AFRO, Information brochure for early detection and management of noma, https://www.afro.who.int/publications/information-brochure-early-detection-and-management-noma ; Farley E, Mehta U, Srour ML, Lenglet A. Noma (cancrum oris): a scoping literature review of a neglected disease (1843 to 2021). PLoS Negl Trop Dis. 2021;15(12):e0009844. https://doi.org/10.1371/journal.pntd.0009844",
+        "date_maj": "2026-08-26",
+    },
+    {
+        "maladie": "noma",
         "categorie": "prevention",
         "contenu": """
 La prévention du noma repose sur une alimentation suffisante, une bonne hygiène bucco-dentaire, l'accès aux soins et le traitement rapide des infections et de la malnutrition.
@@ -563,5 +590,14 @@ Toute lésion ou inflammation qui progresse rapidement dans la bouche ou le visa
 """,
         "source": "OMS / guide de santé publique",
         "date_maj": "2026-08-23",
+    },
+    {
+        "maladie": "noma",
+        "categorie": "gestes_interdits",
+        "contenu": """
+Ne pas attendre une aggravation ou l'apparition d'un trou dans le visage avant de rechercher des soins. Ne pas attribuer la lésion à une cause surnaturelle, à une simple plaie ou à une infection dentaire banale. Ne pas appliquer de produits caustiques, irritants ou non prescrits sur la gencive, la bouche ou la plaie, et ne pas tenter de brûler, gratter, inciser ou retirer les tissus nécrosés à domicile. Ne pas administrer d'antibiotiques sans évaluation par un professionnel de santé et sans respecter la prescription. Ne pas forcer l'ouverture de la bouche ni l'alimentation chez un enfant présentant une douleur importante, un trismus ou des difficultés à avaler, car cela peut provoquer une fausse route. Ne pas isoler ou stigmatiser l'enfant : le noma est considéré comme une maladie opportuniste et non contagieuse, et aucune transmission directe interhumaine n'est documentée. Toute suspicion doit conduire à une orientation urgente vers une structure de santé.
+""",
+        "source": "OMS, « Noma », fiche d'information, https://www.who.int/news-room/fact-sheets/detail/noma ; OMS/AFRO, Information brochure for early detection and management of noma, https://www.afro.who.int/publications/information-brochure-early-detection-and-management-noma ; Farley E, Mehta U, Srour ML, Lenglet A. Noma (cancrum oris): a scoping literature review of a neglected disease (1843 to 2021). PLoS Negl Trop Dis. 2021;15(12):e0009844. https://doi.org/10.1371/journal.pntd.0009844",
+        "date_maj": "2026-08-26",
     },
 ]
