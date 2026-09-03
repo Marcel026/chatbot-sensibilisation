@@ -10,12 +10,12 @@ Date : 2026-08-17
 # =========================
 
 ## Niveau 1 : Sources de données
-- documents_mtn.py
+- src/documents_mtn.py
   └─ Fournit : DOCUMENTS_MTN
 
 ## Niveau 2 : Moteur RAG
-- rag_mtn.py
-  ├─ Importe : documents_mtn.DOCUMENTS_MTN
+- src/rag_mtn.py
+  ├─ Importe : src.documents_mtn.DOCUMENTS_MTN
   ├─ Importe : sentence_transformers, numpy, re, logging, unicodedata
   ├─ Exporte : rechercher_information(), obtenir_reponse()
   └─ Rôle : Moteur RAG monolithique (retrieval + generation + utils)
@@ -26,22 +26,18 @@ Date : 2026-08-17
   ├─ Importe : streamlit, json, datetime, pathlib
   └─ Rôle : Interface web utilisateur
 
-- chatbot.py (CLI terminal)
-  ├─ Importe : rag_mtn.DEBUG, rag_mtn.rechercher_information, rag_mtn.obtenir_reponse
-  └─ Rôle : Interface terminal interactive
-
-- whatsapp_bot.py (Flask webhook)
-  ├─ Importe : rag_mtn (module entier)
+- src/whatsapp_bot.py (Flask webhook)
+  ├─ Importe : src.rag_mtn (module entier)
   ├─ Importe : flask, twilio
   └─ Rôle : Serveur webhook pour Twilio/WhatsApp
 
 ## Niveau 4 : Tests & Utilitaires
 - tests/test_rag.py
-  ├─ Importe : rag_mtn.rechercher_information, rag_mtn.obtenir_reponse, rag_mtn.normaliser_texte
+  ├─ Importe : src.rag_mtn.rechercher_information, src.rag_mtn.obtenir_reponse, src.rag_mtn.normaliser_texte
   └─ Rôle : Tests unitaires RAG
 
 - tests/test_documents.py
-  ├─ Importe : documents_mtn.DOCUMENTS_MTN, MALADIES_VALIDES, CATEGORIES_VALIDES, valider_documents
+  ├─ Importe : src.documents_mtn.DOCUMENTS_MTN, MALADIES_VALIDES, CATEGORIES_VALIDES, valider_documents
   └─ Rôle : Tests validation base documentaire
 
 - verify_rag.py
@@ -69,21 +65,20 @@ Graphe de dépendances (simplifié) :
 └───┬─────────────────────────────────────┘
     │
     ├──► app.py (Streamlit)
-    ├──► chatbot.py (CLI)
-    ├──► whatsapp_bot.py (Flask)
+    ├──► src/whatsapp_bot.py (Flask)
     ├──► verify_rag.py (Script)
     └──► tests/test_rag.py
 
-Chaque point d'entrée dépend UNIQUEMENT de rag_mtn.py
+Chaque point d'entrée dépend du package `src`.
 
 # =========================
 # RISQUES DE RUPTURE
 # =========================
 
 🔴 CRITIQUE (causerait panne immédiate) :
-  ❌ Supprimer rag_mtn.py
-  ❌ Renommer rag_mtn.py sans mettre à jour imports
-  ❌ Supprimer documents_mtn.py
+  ❌ Supprimer src/rag_mtn.py
+  ❌ Renommer src/rag_mtn.py sans mettre à jour imports
+  ❌ Supprimer src/documents_mtn.py
 
 🟠 MAJEUR (casserait des fonctionnalités) :
   ⚠️  Modifier signature de rechercher_information()
@@ -100,8 +95,8 @@ Chaque point d'entrée dépend UNIQUEMENT de rag_mtn.py
 Fichier requirements.txt (à jour) :
 
 ✅ streamlit>=1.28.0           (app.py)
-✅ sentence-transformers>=2.2.2 (rag_mtn.py)
-✅ numpy>=1.24.0               (rag_mtn.py)
+✅ sentence-transformers>=2.2.2 (src/rag_mtn.py)
+✅ numpy>=1.24.0               (src/rag_mtn.py)
 ✅ flask>=2.3.0                (whatsapp_bot.py)
 ✅ twilio>=8.10.0              (whatsapp_bot.py)
 ✅ pytest>=7.4.0               (tests)
@@ -117,10 +112,10 @@ Toutes les versions sont pincées (>=).
 # =========================
 
 AVANT déploiement :
-  ✅ [FAIT] Vérifier que rag_mtn.py exporte correctement
-  ✅ [FAIT] Vérifier que documents_mtn.py est importable
+  ✅ [FAIT] Vérifier que src.rag_mtn exporte correctement
+  ✅ [FAIT] Vérifier que src.documents_mtn est importable
   ✅ [FAIT] Vérifier que tous les imports sont résolus
-  ✅ [FAIT] Nettoyer et documenter rag_mtn.py
+  ✅ [FAIT] Nettoyer et documenter src/rag_mtn.py
   
 À faire :
   → Exécuter tests (pytest tests/ -v)
@@ -138,10 +133,10 @@ AVANT déploiement :
 Structure :
   mtn_rag/
   ├── app.py                        ✅ Point entrée Streamlit
-  ├── chatbot.py                    ✅ CLI interactive
-  ├── whatsapp_bot.py               ✅ Flask webhook
-  ├── rag_mtn.py                    ✅ Moteur RAG (CONSERVÉ)
-  ├── documents_mtn.py              ✅ Base documentaire
+  ├── src/                          ✅ Modules applicatifs
+  ├── render.yaml                   ✅ Déploiement Render
+  ├── src/rag_mtn.py                ✅ Moteur RAG
+  ├── src/documents_mtn.py          ✅ Base documentaire
   ├── tests/                        ✅ Suite tests
   ├── .github/workflows/ci.yml      ✅ GitHub Actions
   ├── .vscode/tasks.json            ✅ Tâches VS Code
