@@ -6,7 +6,7 @@ Ce module encapsule l'ensemble de la logique de recherche et génération :
 2. GENERATION : Assemblage de la réponse finale
 3. UTILS : Normalisation, détection d'intent, synonymes
 
-Fonctions publiques (importées par app.py, chatbot.py, whatsapp_bot.py) :
+Fonctions publiques (importées par app.py et src.whatsapp_bot.py) :
 - rechercher_information(question, top_k=3) → Liste de résultats
 - obtenir_reponse(question) → Texte réponse final
 
@@ -21,7 +21,7 @@ import numpy as np
 import unicodedata
 from sentence_transformers import SentenceTransformer
 
-from documents_mtn import DOCUMENTS_MTN
+from .documents_mtn import DOCUMENTS_MTN
 
 # ========================
 # Configuration du logging
@@ -260,7 +260,7 @@ def detecter_maladie(question_lower):
     return None
 
 
-def check_category_booster(question_lower, maladie_in_question):
+def check_category_booster(question_lower):
     """
     Vérifie les boosters de catégorie et retourne le résultat si trouvé.
     Privilégie la catégorie attendue et la maladie détectée.
@@ -374,7 +374,7 @@ def rechercher_information(question, top_k=3):
     # =========================
     # BOOSTERS DE CATÉGORIE (REFACTORISÉS)
     # =========================
-    booster_result = check_category_booster(question_lower, question_lower)
+    booster_result = check_category_booster(question_lower)
     if booster_result:
         return booster_result
 

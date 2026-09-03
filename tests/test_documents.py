@@ -1,6 +1,6 @@
 """Tests de validation pour la base documentaire (documents_mtn.py)"""
 import pytest
-from documents_mtn import (
+from src.documents_mtn import (
     DOCUMENTS_MTN,
     MALADIES_VALIDES,
     CATEGORIES_VALIDES,

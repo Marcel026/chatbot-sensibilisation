@@ -160,7 +160,18 @@ Si elle n'est pas traitée, la lèpre peut entraîner des lésions permanentes d
         "date_maj": "2026-08-08",
     },
     {
-        "maladie": "dengue",
+"maladie": "lepre",
+"categorie": "gestes_interdits",
+"contenu": """
+Ne stigmatisez pas une personne atteinte de lèpre et n'interrompez pas son
+traitement sans avis médical. Ne brûlez pas, ne coupez pas et n'appliquez
+pas de produits irritants sur les lésions ou les nerfs douloureux.
+""",
+"source": "OMS / guide de santé publique",
+"date_maj": "2026-08-08",
+    },
+    {
+"maladie": "dengue",
         "categorie": "definition",
         "contenu": """
 La dengue est une maladie virale transmise par les moustiques Aedes infectés. Elle est fréquente dans les zones tropicales et subtropicales et peut évoluer vers des formes graves si elle n'est pas prise en charge rapidement.
@@ -251,7 +262,18 @@ Les personnes les plus exposées sont celles vivant dans des zones urbaines ou p
         "date_maj": "2026-08-08",
     },
     {
-        "maladie": "ems",
+"maladie": "dengue",
+"categorie": "gestes_interdits",
+"contenu": """
+En cas de suspicion de dengue, ne prenez pas d'aspirine ni d'anti-inflammatoires
+sans avis médical, car ils peuvent augmenter le risque de saignement. Ne retardez
+pas la consultation en cas de signe d'alerte.
+""",
+"source": "OMS / guide de santé publique",
+"date_maj": "2026-08-08",
+    },
+    {
+"maladie": "ems",
         "categorie": "definition",
         "contenu": """
 Les envenimations par morsure de serpent (EMS) surviennent lorsqu'un serpent venimeux injecte son venin lors d'une morsure. C'est une urgence médicale dans de nombreuses zones rurales.
@@ -428,6 +450,17 @@ Sans traitement, la schistosomiase peut provoquer des complications digestives, 
 """,
         "source": "OMS / guide de santé publique",
         "date_maj": "2026-08-08",
+    },
+    {
+"maladie": "schistosomiase",
+"categorie": "gestes_interdits",
+"contenu": """
+Ne vous baignez pas dans des eaux douces suspectes et n'utilisez pas de
+traitements non prescrits pour remplacer une consultation. Ne retardez
+pas le dépistage ou le traitement recommandé par un professionnel de santé.
+""",
+"source": "OMS / guide de santé publique",
+"date_maj": "2026-08-08",
     },
     {
         "maladie": "ulcere de buruli",

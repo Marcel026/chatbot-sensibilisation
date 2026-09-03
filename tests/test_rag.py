@@ -1,6 +1,6 @@
 """Tests unitaires pour le moteur RAG (rag_mtn.py)"""
 import pytest
-from rag_mtn import (
+from src.rag_mtn import (
     normaliser_texte,
     rechercher_information,
     obtenir_reponse,
@@ -84,13 +84,13 @@ class TestObtenirReponse:
         # La réponse doit être fournie
         assert len(response) > 10
 
-    def test_categorie_absente_signalee(self):
-        """Signale l'absence d'une catégorie pour une maladie connue."""
+    def test_categorie_gestes_interdits_dengue(self):
+        """Retourne la catégorie des gestes interdits pour la dengue."""
         results = rechercher_information(
             "Quels sont les gestes interdits pour la dengue ?"
         )
-        assert results[0]["categorie"] == "information_absente"
-        assert "n'est pas disponible" in results[0]["contenu"]
+        assert results[0]["categorie"] == "gestes_interdits"
+        assert "aspirine" in results[0]["contenu"].lower()
 
 
 @pytest.mark.parametrize(

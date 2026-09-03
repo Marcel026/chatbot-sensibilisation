@@ -14,14 +14,19 @@ Application Streamlit pour l'éducation et la sensibilisation aux **Maladies Tro
 ```
 mtn_rag/
 ├── app.py                      # Interface Streamlit (web)
-├── rag_mtn.py                  # Moteur RAG avec SentenceTransformers
-├── documents_mtn.py            # Base documentaire structurée
+├── src/
+│   ├── rag_mtn.py              # Moteur RAG avec SentenceTransformers
+│   ├── documents_mtn.py        # Base documentaire structurée
+│   └── whatsapp_bot.py         # Webhook Flask/Twilio
+├── data/                       # Données brutes et traitées (hors dépôt)
+├── docs/                       # Documentation étendue
+├── notebooks/                  # Exploration reproductible
 ├── tests/                       # Tests unitaires et d'intégration
 │   ├── test_rag.py
 │   ├── test_documents.py
 │   └── conftest.py
 ├── .vscode/tasks.json          # Tâches VS Code
-├── .github/workflows/ci.yml    # GitHub Actions CI/CD
+├── .github/workflows/ci.yml    # GitHub Actions CI
 ├── requirements.txt            # Dépendances Python
 ├── .env.example                # Template variables d'environnement
 └── README.md                   # Cette documentation
@@ -80,7 +85,7 @@ pytest tests/ --cov=. --cov-report=html
 
 ## 📝 Structure des Documents
 
-Les documents MTN sont structurés dans `documents_mtn.py` :
+Les documents MTN sont structurés dans `src/documents_mtn.py` :
 
 ```python
 {
@@ -123,7 +128,7 @@ Le système utilise **SentenceTransformers** avec le modèle `all-MiniLM-L6-v2` 
 ### Utilisation programmatique
 
 ```python
-from rag_mtn import rechercher_information, obtenir_reponse
+from src.rag_mtn import rechercher_information, obtenir_reponse
 
 # Recherche directe (retourne liste des résultats)
 results = rechercher_information("Quels sont les symptômes de la dengue ?", top_k=3)
@@ -167,7 +172,7 @@ Settings → Secrets → Coller `.env`
 
 ### Mode DEBUG
 ```python
-# Dans rag_mtn.py
+# Dans src/rag_mtn.py
 DEBUG = True
 ```
 
