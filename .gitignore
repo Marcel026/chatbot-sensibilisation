@@ -10,9 +10,6 @@ venv/
 .pytest_cache/
 embeddings_cache.npz
 .streamlit/secrets.toml
-whatsapp_bot.py
-render.yaml
-.vscode/
 .DS_Store
 .idea/
 *.sqlite3

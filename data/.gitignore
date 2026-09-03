@@ -1,0 +1,7 @@
+# Les données locales et générées ne doivent pas être versionnées.
+*
+!.gitignore
+!raw/
+!raw/.gitkeep
+!processed/
+!processed/.gitkeep

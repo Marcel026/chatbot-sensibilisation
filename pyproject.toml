@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mtn-rag"
+version = "1.0.0b1"
+description = "Application de sensibilisation aux maladies tropicales négligées"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "streamlit>=1.28.0",
+    "sentence-transformers>=2.2.2",
+    "numpy>=1.24.0",
+    "flask>=2.3.0",
+    "twilio>=8.10.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+
+[tool.flake8]
+max-line-length = 100
+exclude = [".git", ".venv", "__pycache__", ".pytest_cache"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
