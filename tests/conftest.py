@@ -6,6 +6,7 @@ from pathlib import Path
 # Ajouter le répertoire parent au path pour les imports
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(ROOT_DIR / "src"))
 
 
 @pytest.fixture(scope="session")

@@ -3,7 +3,7 @@ import streamlit as st
 import json
 from datetime import datetime
 from pathlib import Path
-from rag_mtn import obtenir_reponse, rechercher_information
+from src.rag_mtn import obtenir_reponse, rechercher_information
 
 # ========================
 # Configuration Streamlit
