@@ -9,6 +9,9 @@ Notes:
 """
 from flask import Flask, request, Response
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 try:
     # Importer le moteur RAG local et s'assurer que les embeddings sont initialisés

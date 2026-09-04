@@ -44,6 +44,10 @@ class Settings:
     def is_production(self) -> bool:
         return self.app_env == "prod"
 
+    @property
+    def requires_webhook_secret(self) -> bool:
+        return self.app_env in {"staging", "prod"}
+
 
 @lru_cache
 def get_settings() -> Settings:
