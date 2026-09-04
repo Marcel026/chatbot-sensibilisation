@@ -15,3 +15,8 @@ embeddings_cache.npz
 *.sqlite3
 *.db
 *.log
+
+# Données et sessions locales OpenWA
+docker/openwa-sessions/
+docker/openwa-data/
+docker/openwa-logs/
