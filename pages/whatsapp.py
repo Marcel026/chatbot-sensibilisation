@@ -2,10 +2,20 @@
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import requests
 import streamlit as st
 
-from pages.config import BACKEND_TIMEOUT_SECONDS, BACKEND_URL
+root_dir = Path(__file__).resolve().parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
+from streamlit_config.config import (  # noqa: E402
+    BACKEND_TIMEOUT_SECONDS,
+    BACKEND_URL,
+)
 
 SEND_MESSAGE_URL = f"{BACKEND_URL}/api/send_message"
 HEALTH_URL = f"{BACKEND_URL}/health"
