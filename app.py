@@ -5,7 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
-from src.rag_mtn import obtenir_reponse, rechercher_information
+from src.documents_mtn import CATEGORIES_UI, MALADIES_LABELS, MALADIES_VALIDES
+from src.rag_mtn import rechercher_information
 
 load_dotenv()
 
@@ -48,14 +49,6 @@ MESSAGES_FR = {
     "question_vide":
         "⚠️ Veuillez saisir une question avant d'envoyer votre message.",
 
-    "suggestions": [
-        "🦠 Quels sont les symptômes ?",
-        "🛡️ Comment prévenir cette maladie ?",
-        "🏥 Que faire en cas de suspicion ?",
-        "⚠️ Quels sont les signes de gravité ?",
-        "💊 Quel est le traitement recommandé ?"
-    ],
-
     "feedback_prompt":
         "✅ Cette réponse vous a-t-elle été utile ?",
 
@@ -71,11 +64,15 @@ MESSAGES_FR = {
     "feedback_thanks_non":
         "🙏 Merci pour votre retour. Nous prendrons en compte votre remarque.",
 
-    "plus_info":
-        "🔎 Souhaitez-vous approfondir ce sujet ?",
+    "categories_titre":
+        "🔎 Approfondir ce sujet",
 
-    "plus_info_btn":
-        "📚 Voir les suggestions",
+    "categories_hint":
+        (
+            "💡 Posez d'abord une question sur une maladie "
+            "(ex. : « Qu'est-ce que la lèpre ? ») : les 9 catégories "
+            "d'information seront alors proposées pour cette maladie."
+        ),
 
     "aide":
         (
@@ -121,6 +118,47 @@ def sauvegarder_feedback(question, reponse, feedback):
             json.dump(feedbacks, f, ensure_ascii=False, indent=2)
     except Exception as e:
         st.error(f"Erreur lors de la sauvegarde du feedback: {e}")
+
+# ========================
+# Traitement d'une Question
+# ========================
+def poser_question(question):
+    """Traite une question (chat ou bouton de catégorie) de façon unifiée :
+    historique, réponse RAG et réinitialisation de l'état feedback.
+    """
+    st.session_state.messages.append({"role": "user", "content": question})
+    st.session_state.derniere_question = question
+    st.session_state.feedback_donnee = False
+
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    try:
+        resultats = rechercher_information(question, top_k=3)
+        response = (
+            resultats[0]["contenu"]
+            if resultats and resultats[0].get("contenu")
+            else ""
+        )
+        st.session_state.derniere_resultat = resultats[0] if resultats else None
+
+        if not response:
+            st.error(MESSAGES_FR["erreur"])
+            st.stop()
+
+        st.session_state.derniere_reponse = response
+
+        with st.chat_message("assistant"):
+            st.markdown(response)
+
+        st.session_state.messages.append(
+            {"role": "assistant", "content": response}
+        )
+    except Exception as e:
+        st.error(MESSAGES_FR["erreur"])
+        if afficher_debug:
+            st.error(f"Détail de l'erreur: {str(e)}")
+        st.stop()
 
 # ========================
 # Configuration Session State
@@ -189,44 +227,13 @@ for message in st.session_state.messages:
 # Traitement des Nouvelles Questions
 # ========================
 if prompt := st.chat_input(MESSAGES_FR["input_placeholder"]):
-    
+
     # Validation entrée
     if not prompt or not prompt.strip():
         st.error(MESSAGES_FR["question_vide"])
         st.stop()
-    
-    # Ajouter la question à l'historique
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    st.session_state.derniere_question = prompt
-    st.session_state.feedback_donnee = False
-    
-    with st.chat_message("user"):
-        st.markdown(prompt)
-    
-    # Obtenir la réponse
-    try:
-        resultats = rechercher_information(prompt, top_k=3)
-        response = resultats[0]["contenu"] if resultats and resultats[0].get("contenu") else ""
-        st.session_state.derniere_resultat = resultats[0] if resultats else None
-        
-        if not response:
-            st.error(MESSAGES_FR["erreur"])
-            st.stop()
-        
-        st.session_state.derniere_reponse = response
-        
-        # Afficher la réponse
-        with st.chat_message("assistant"):
-            st.markdown(response)
-        
-        # Ajouter seulement la réponse à l'historique
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        
-    except Exception as e:
-        st.error(MESSAGES_FR["erreur"])
-        if afficher_debug:
-            st.error(f"Détail de l'erreur: {str(e)}")
-        st.stop()
+
+    poser_question(prompt)
 
 # ========================
 # Section Feedback et Suggestions
@@ -260,29 +267,33 @@ if st.session_state.derniere_reponse and not st.session_state.feedback_donnee:
             st.session_state.feedback_donnee = True
 
 # ========================
-# Suggestions Supplémentaires
+# Exploration par Catégorie (liée à la dernière maladie interrogée)
 # ========================
-if st.session_state.derniere_reponse:
-    st.markdown("---")
-    st.markdown(MESSAGES_FR["plus_info"])
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    suggestions = [
-        ("symptômes", "Quels sont les symptômes ?"),
-        ("prévention", "Comment prévenir ?"),
-        ("conduite", "Que faire en cas de suspicion ?"),
-        ("gravité", "Quels sont les signes de gravité ?")
-    ]
-    
-    cols = [col1, col2, col3, col4]
-    for i, (key, question_auto) in enumerate(suggestions):
-        with cols[i]:
-            if st.button(f"ℹ️ {key.capitalize()}", key=f"suggest_{i}"):
-                st.session_state.messages.append({"role": "user", "content": question_auto})
-                response = obtenir_reponse(question_auto)
-                st.session_state.messages.append({"role": "assistant", "content": response})
+derniere_maladie = None
+if st.session_state.derniere_resultat:
+    maladie_candidate = st.session_state.derniere_resultat.get("maladie")
+    if maladie_candidate in MALADIES_VALIDES:
+        derniere_maladie = maladie_candidate
+
+st.markdown("---")
+if derniere_maladie:
+    libelle_maladie = MALADIES_LABELS[derniere_maladie]
+    st.markdown(
+        f"#### {MESSAGES_FR['categories_titre']} — "
+        f"**{libelle_maladie[0].upper() + libelle_maladie[1:]}**"
+    )
+    colonnes = st.columns(3)
+    for index, (categorie, emoji, libelle, gabarit) in enumerate(CATEGORIES_UI):
+        with colonnes[index % 3]:
+            if st.button(
+                f"{emoji} {libelle}",
+                key=f"categorie_{categorie}",
+                use_container_width=True,
+            ):
+                poser_question(gabarit.format(maladie=libelle_maladie))
                 st.rerun()
+else:
+    st.info(MESSAGES_FR["categories_hint"])
 
 # ========================
 # Debug Info

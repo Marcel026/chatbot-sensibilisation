@@ -32,6 +32,33 @@ MALADIES_VALIDES = {
 # Toutes les catégories autorisées sont obligatoires pour chaque maladie.
 CATEGORIES_REQUISES = CATEGORIES_VALIDES.copy()
 
+# Libellés d'affichage des maladies (forme sujet), utilisés pour formuler
+# les questions de l'interface (boutons de catégories) vers le moteur RAG.
+MALADIES_LABELS = {
+    "lepre": "la lèpre",
+    "dengue": "la dengue",
+    "ems": "l'envenimation par morsure de serpent",
+    "schistosomiase": "la schistosomiase",
+    "ulcere de buruli": "l'ulcère de Buruli",
+    "noma": "le noma",
+}
+
+# Catégories proposées dans l'interface, chacune associée à un gabarit de
+# question. Le gabarit est combiné au libellé de la maladie détectée dans
+# la dernière question posée. Les identifiants couvrent exactement
+# CATEGORIES_VALIDES (vérifié par les tests).
+CATEGORIES_UI = [
+    ("definition", "📖", "Définition", "Qu'est-ce que {maladie} ?"),
+    ("transmission", "🦟", "Transmission", "Comment se transmet {maladie} ?"),
+    ("symptomes", "🤒", "Symptômes", "Pour {maladie}, quels sont les symptômes ?"),
+    ("signes_alerte", "🚨", "Signes d'alerte", "Pour {maladie}, quels sont les signes d'alerte ?"),
+    ("prevention", "🛡️", "Prévention", "Comment prévenir {maladie} ?"),
+    ("conduite", "🏥", "Conduite à tenir", "Pour {maladie}, que faire en cas de suspicion ?"),
+    ("facteurs_risque", "⚠️", "Facteurs de risque", "Pour {maladie}, quels sont les facteurs de risque ?"),
+    ("gravite", "🔺", "Gravité", "Pour {maladie}, quels sont les signes de gravité ?"),
+    ("gestes_interdits", "🚫", "Gestes interdits", "Pour {maladie}, quels sont les gestes interdits ?"),
+]
+
 
 def valider_documents(documents=None):
     """Vérifie la structure et la cohérence de la base documentaire."""
