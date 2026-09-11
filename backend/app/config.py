@@ -1,4 +1,4 @@
-"""Configuration de l'intégration OpenWA."""
+"""Configuration de l'intégration WhatsApp Cloud API (Meta)."""
 
 from __future__ import annotations
 
@@ -31,21 +31,20 @@ class Settings:
     debug: bool
     log_level: str
     backend_url: str
-    openwa_enabled: bool
-    openwa_api_url: str
-    openwa_api_key: str | None
-    openwa_instance_id: str | None
-    webhook_secret: str | None
-    twilio_account_sid: str | None
-    twilio_auth_token: str | None
-    twilio_phone_number: str | None
+    wa_enabled: bool = False
+    wa_api_version: str = "v23.0"
+    wa_phone_number_id: str | None = None
+    wa_access_token: str | None = None
+    wa_verify_token: str | None = None
+    wa_app_secret: str | None = None
 
     @property
     def is_production(self) -> bool:
         return self.app_env == "prod"
 
     @property
-    def requires_webhook_secret(self) -> bool:
+    def requires_signature(self) -> bool:
+        """La signature des webhooks est obligatoire hors mode local."""
         return self.app_env in {"staging", "prod"}
 
 
@@ -66,14 +65,10 @@ def get_settings() -> Settings:
         backend_url=os.getenv(
             "BACKEND_URL", "http://localhost:8000"
         ).rstrip("/"),
-        openwa_enabled=_read_bool("OPENWA_ENABLED", False),
-        openwa_api_url=os.getenv(
-            "OPENWA_API_URL", "http://localhost:8080"
-        ).rstrip("/"),
-        openwa_api_key=os.getenv("OPENWA_API_KEY") or None,
-        openwa_instance_id=os.getenv("OPENWA_INSTANCE_ID") or None,
-        webhook_secret=os.getenv("WEBHOOK_SECRET") or None,
-        twilio_account_sid=os.getenv("TWILIO_ACCOUNT_SID") or None,
-        twilio_auth_token=os.getenv("TWILIO_AUTH_TOKEN") or None,
-        twilio_phone_number=os.getenv("TWILIO_PHONE_NUMBER") or None,
+        wa_enabled=_read_bool("WA_ENABLED", False),
+        wa_api_version=os.getenv("WA_API_VERSION", "v23.0").strip(),
+        wa_phone_number_id=os.getenv("WA_PHONE_NUMBER_ID") or None,
+        wa_access_token=os.getenv("WA_ACCESS_TOKEN") or None,
+        wa_verify_token=os.getenv("WA_VERIFY_TOKEN") or None,
+        wa_app_secret=os.getenv("WA_APP_SECRET") or None,
     )

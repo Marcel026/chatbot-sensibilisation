@@ -2,13 +2,13 @@
 
 from fastapi import APIRouter, Response, status
 
+from ..cloud_api_client import send_message
 from ..config import get_settings
 from ..models.message import (
     HealthResponse,
     SendMessageRequest,
     SendMessageResponse,
 )
-from ..openwa_client import send_message
 
 router = APIRouter(tags=["messages"])
 
@@ -21,14 +21,14 @@ router = APIRouter(tags=["messages"])
 async def send_whatsapp_message(
     payload: SendMessageRequest, response: Response
 ) -> SendMessageResponse:
-    """Envoie un message via OpenWA ou le mode mock local."""
+    """Envoie un message via l'API WhatsApp Cloud ou le mode mock local."""
 
     result = await send_message(payload.to, payload.text)
     if result.success:
         detail = (
-            "Message simulated because OpenWA is disabled"
+            "Message simulated because WhatsApp is disabled"
             if result.status == "mock"
-            else "Message accepted by OpenWA"
+            else "Message accepted by WhatsApp Cloud API"
         )
         return SendMessageResponse(
             status="success",
@@ -50,15 +50,15 @@ async def send_whatsapp_message(
     )
     return SendMessageResponse(
         status="error",
-        detail=result.error or "OpenWA could not send the message",
+        detail=result.error or "WhatsApp Cloud API could not send the message",
     )
 
 
 @router.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
-    """Retourne l'état minimal du backend sans appeler OpenWA."""
+    """Retourne l'état minimal du backend sans appeler WhatsApp."""
 
     return HealthResponse(
         status="ok",
-        openwa_enabled=get_settings().openwa_enabled,
+        wa_enabled=get_settings().wa_enabled,
     )

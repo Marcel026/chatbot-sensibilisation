@@ -1,6 +1,10 @@
-# Backend FastAPI et client HTTP OpenWA
+# Backend FastAPI, client HTTP WhatsApp Cloud API et moteur RAG.
+# Ce fichier est autonome : il permet de déployer le backend sans
+# l'environnement Streamlit complet.
 fastapi>=0.115,<1
 uvicorn[standard]>=0.30,<1
 httpx>=0.27,<1
 pydantic>=2,<3
 python-dotenv>=1,<2
+sentence-transformers>=2.2.2
+numpy>=1.24.0

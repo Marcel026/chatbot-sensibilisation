@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 TOGO_E164_PATTERN = r"^\+228\d{8}$"
 
@@ -36,23 +35,7 @@ class HealthResponse(BaseModel):
     """État de disponibilité du backend."""
 
     status: Literal["ok"]
-    openwa_enabled: bool
-
-
-class WebhookPayload(BaseModel):
-    """Événement OpenWA entrant attendu par le webhook.
-
-    Exemple de payload OpenWA simulé :
-    {"from": "22890000000@c.us", "text": "Bonjour", "timestamp": "..."}
-    """
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    from_number: str = Field(alias="from", min_length=1, max_length=128)
-    text: str = Field(min_length=1, max_length=4_096)
-    timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
+    wa_enabled: bool
 
 
 class WebhookResponse(BaseModel):

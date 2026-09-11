@@ -17,8 +17,10 @@ Configuration :
 
 import re
 import logging
+import threading
 import numpy as np
 import unicodedata
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 
 from .documents_mtn import DOCUMENTS_MTN
@@ -37,6 +39,13 @@ logger = logging.getLogger(__name__)
 # ========================
 DEBUG = False  # Mode debug (affiche logs supplémentaires si True)
 SEUIL_SIMILARITE = 0.65  # Score minimum de similarité pour retourner un résultat
+MODELE_EMBEDDINGS = "all-MiniLM-L6-v2"
+
+# Cache d'embeddings pré-calculés, versionné dans le dépôt (models/embeddings_mtn.npz).
+# Régénérer avec : python scripts/build_embeddings.py
+EMBEDDINGS_PATH = (
+    Path(__file__).resolve().parents[1] / "models" / "embeddings_mtn.npz"
+)
 SYNONYMES = {
     "ub": "ulcere de buruli",
     "ulcère de buruli": "ulcere de buruli",
@@ -59,17 +68,15 @@ SYNONYMES.update({
 })
 
 # ========================
-# Initialisation du modèle
+# Initialisation du modèle (lazy) et des embeddings
 # ========================
-logger.info("Initialisation du modèle SentenceTransformer (all-MiniLM-L6-v2)...")
-embedder = SentenceTransformer(
-    "all-MiniLM-L6-v2"
-)
-logger.info("✅ Modèle chargé avec succès.")
+# Le modèle n'est chargé en mémoire que si la recherche vectorielle en a
+# besoin (les boosters de catégories n'en requièrent pas). Les embeddings
+# des documents sont lus depuis le cache .npz versionné s'il est valide.
+_embedder = None
+_embeddings = None
+_chargement_lock = threading.Lock()
 
-# ========================
-# Préparation des chunks documentaires
-# ========================
 logger.debug("Préparation des chunks documentaires...")
 chunks = []
 
@@ -83,20 +90,95 @@ for doc in DOCUMENTS_MTN:
 
 logger.debug(f"✅ {len(chunks)} chunks préparés.")
 
-# ========================
-# Création des embeddings
-# ========================
-logger.debug("Création des embeddings via SentenceTransformer...")
 
-textes = [
-    f"{c['maladie']} {c['categorie']} {c['contenu']}"
-    for c in chunks
-]
-embeddings = embedder.encode(
-    textes,
-    convert_to_numpy=True
-)
-logger.info(f"✅ Embeddings créés pour {len(textes)} documents.")
+def _construire_textes():
+    """Textes composés servant de clé de cohérence au cache d'embeddings."""
+    return [
+        f"{c['maladie']} {c['categorie']} {c['contenu']}"
+        for c in chunks
+    ]
+
+
+def get_embedder():
+    """Charge le modèle SentenceTransformer une seule fois (thread-safe)."""
+    global _embedder
+    if _embedder is None:
+        with _chargement_lock:
+            if _embedder is None:
+                logger.info(
+                    "Chargement du modèle SentenceTransformer (%s)...",
+                    MODELE_EMBEDDINGS
+                )
+                _embedder = SentenceTransformer(MODELE_EMBEDDINGS)
+                logger.info("✅ Modèle chargé avec succès.")
+    return _embedder
+
+
+def construire_embeddings(chemin=None, save=True):
+    """Calcule les embeddings des chunks et les sauvegarde dans le cache .npz.
+
+    Utilisé par scripts/build_embeddings.py pour régénérer le cache versionné,
+    et en repli lorsque le cache est absent ou incohérent avec la base.
+    """
+    embeddings = get_embedder().encode(
+        _construire_textes(),
+        convert_to_numpy=True
+    )
+    if save:
+        sortie = Path(chemin) if chemin else EMBEDDINGS_PATH
+        sortie.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(
+            sortie,
+            embeddings=embeddings,
+            textes=np.array(_construire_textes())
+        )
+        logger.info(
+            "✅ Embeddings sauvegardés dans %s (%d documents).",
+            sortie, len(embeddings)
+        )
+    return embeddings
+
+
+def _charger_embeddings():
+    """Charge le cache .npz s'il correspond à la base, sinon recalcule."""
+    global _embeddings
+    if EMBEDDINGS_PATH.exists():
+        try:
+            cache = np.load(EMBEDDINGS_PATH, allow_pickle=False)
+            textes_stockes = [str(t) for t in cache["textes"].tolist()]
+            if textes_stockes == _construire_textes():
+                _embeddings = cache["embeddings"]
+                logger.info(
+                    "✅ %d embeddings chargés depuis %s.",
+                    len(textes_stockes), EMBEDDINGS_PATH.name
+                )
+                return
+            logger.warning(
+                "Le cache d'embeddings ne correspond plus à la base "
+                "documentaire : recalcul en cours."
+            )
+        except (OSError, ValueError, KeyError) as error:
+            logger.warning(
+                "Cache d'embeddings illisible (%s) : recalcul en cours.",
+                error
+            )
+    _embeddings = construire_embeddings(save=False)
+
+
+def obtenir_embeddings():
+    """Retourne la matrice d'embeddings (chargement paresseux, thread-safe)."""
+    if _embeddings is None:
+        with _chargement_lock:
+            if _embeddings is None:
+                _charger_embeddings()
+    return _embeddings
+
+
+def precharger_modele():
+    """Force le chargement du modèle et des embeddings (warmup serveur)."""
+    obtenir_embeddings()
+    get_embedder().encode(["échauffement"], convert_to_numpy=True)
+    logger.info("✅ Moteur RAG prêt (modèle et embeddings en mémoire).")
 
 # =========================
 # SECTION 1 : UTILITAIRES
@@ -412,10 +494,12 @@ def rechercher_information(question, top_k=3):
     # RECHERCHE VECTORIELLE
     # =========================
 
-    question_embedding = embedder.encode(
+    question_embedding = get_embedder().encode(
         [question],
         convert_to_numpy=True
     )
+
+    embeddings = obtenir_embeddings()
 
     question_norm = (
         question_embedding /

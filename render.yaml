@@ -1,23 +1,33 @@
+# Déploiement du backend FastAPI (webhook WhatsApp Cloud API + RAG) sur Render.
+# Après déploiement : configurer le webhook Meta sur
+#   https://<service>.onrender.com/webhook/whatsapp
+# puis activer WA_ENABLED une fois les secrets renseignés.
 services:
   - type: web
     name: mtn-rag-whatsapp
     env: python
     plan: free
-    region: oregon
+    region: frankfurt
     buildCommand: |
       python -m pip install --upgrade pip
-      python -m pip install --index-url https://pypi.org/simple --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.python.org -r requirements.txt
-    startCommand: python -m src.whatsapp_bot
+      python -m pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PORT
-        value: 8000
-      - key: FLASK_ENV
-        value: production
-      - key: DEBUG
-        value: false
-      - key: TWILIO_ACCOUNT_SID
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: APP_ENV
+        value: prod
+      - key: LOG_LEVEL
+        value: INFO
+      - key: WA_ENABLED
+        value: "false"
+      - key: WA_API_VERSION
+        value: v23.0
+      - key: WA_PHONE_NUMBER_ID
         sync: false
-      - key: TWILIO_AUTH_TOKEN
+      - key: WA_ACCESS_TOKEN
         sync: false
-      - key: TWILIO_PHONE_NUMBER
+      - key: WA_VERIFY_TOKEN
+        sync: false
+      - key: WA_APP_SECRET
         sync: false
