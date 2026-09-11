@@ -1,4 +1,4 @@
-"""Client asynchrone pour l'API Easy API d'OpenWA."""
+"""Client asynchrone pour l'API HTTP de wa-automate."""
 
 from __future__ import annotations
 
@@ -24,6 +24,14 @@ class SendMessageResult:
 
 def _masked_destination(destination: str) -> str:
     return f"***{destination[-4:]}" if len(destination) > 4 else "***"
+
+
+def _to_chat_id(destination: str) -> str:
+    """Convertit un numéro E.164 en identifiant de discussion OpenWA."""
+    normalized = destination.strip()
+    if normalized.endswith(("@c.us", "@g.us")):
+        return normalized
+    return f"{normalized.lstrip('+')}@c.us"
 
 
 async def send_message(
@@ -65,9 +73,9 @@ async def send_message(
             ),
         )
 
-    headers = {"X-API-Key": current_settings.openwa_api_key}
-    endpoint = f"{current_settings.openwa_api_url}/api/sendText"
-    payload = {"to": to, "text": text}
+    headers = {"apiKey": current_settings.openwa_api_key}
+    endpoint = f"{current_settings.openwa_api_url}/sendText"
+    payload = {"to": _to_chat_id(to), "content": text}
 
     try:
         if http_client is not None:

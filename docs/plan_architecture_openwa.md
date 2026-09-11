@@ -39,8 +39,8 @@ Construire une application communautaire en santé publique permettant :
 
 **Composants :**
 1. **OpenWA** : service séparé (Docker), expose :
-   - Dashboard (ex. port 2886)
-   - API REST (ex. port 2785)
+   - API HTTP et documentation interactive (port `8080` par défaut)
+   - Session WhatsApp gérée par QR code et volume Docker persistant
 2. **Backend** : FastAPI, expose :
    - `POST /api/send_message` (depuis Streamlit)
    - `POST /webhook/whatsapp` (depuis OpenWA)

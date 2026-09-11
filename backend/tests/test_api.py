@@ -1,13 +1,14 @@
 """Tests ciblés de l'API FastAPI WhatsApp."""
 
 import asyncio
+import json
 from pathlib import Path
 
 import httpx
 
 from backend.app.config import Settings
 from backend.app.main import app
-from backend.app.openwa_client import SendMessageResult
+from backend.app.openwa_client import SendMessageResult, send_message
 from backend.app.routes import messages, webhook
 
 
@@ -63,6 +64,75 @@ def test_send_message_uses_mock_client(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["status"] == "success"
+
+
+def test_openwa_client_uses_mock_when_disabled():
+    settings = Settings(
+        "local",
+        False,
+        "INFO",
+        "http://localhost:8000",
+        False,
+        "http://openwa:8080",
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    )
+
+    result = asyncio.run(
+        send_message("+22890000000", "Bonjour", settings=settings)
+    )
+
+    assert result.success is True
+    assert result.status == "mock"
+
+
+def test_openwa_client_uses_wa_automate_http_contract():
+    async def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url == httpx.URL("http://openwa:8080/sendText")
+        assert request.headers["apiKey"] == "openwa-api-key"
+        assert json.loads(request.content) == {
+            "to": "22890000000@c.us",
+            "content": "Bonjour",
+        }
+        return httpx.Response(
+            200,
+            json={"success": True, "data": "message-id"},
+        )
+
+    settings = Settings(
+        "prod",
+        False,
+        "INFO",
+        "http://localhost:8000",
+        True,
+        "http://openwa:8080",
+        "openwa-api-key",
+        None,
+        "webhook-secret",
+        None,
+        None,
+        None,
+    )
+
+    async def send() -> SendMessageResult:
+        transport = httpx.MockTransport(handler)
+        async with httpx.AsyncClient(transport=transport) as client:
+            return await send_message(
+                "+22890000000",
+                "Bonjour",
+                settings=settings,
+                http_client=client,
+            )
+
+    result = asyncio.run(send())
+
+    assert result.success is True
+    assert result.status == "sent"
+    assert result.message_id == "message-id"
 
 
 def test_send_message_rejects_invalid_togolese_number():
