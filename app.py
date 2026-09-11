@@ -95,15 +95,24 @@ MESSAGES_FR = {
 # ========================
 # Fichier de Feedback
 # ========================
+# NOTE : fichier local éphémère — sur Streamlit Cloud il est perdu à chaque
+# redémarrage du conteneur. Les contenus sont tronqués (données de santé
+# possibles) et le fichier est exclu du dépôt via .gitignore.
 FEEDBACK_FILE = Path("feedback.json")
 
+def _apercu_anonymise(texte, limite=80):
+    """Tronque un texte pour ne conserver qu'un aperçu non identifiant."""
+    if not texte:
+        return ""
+    return texte[:limite] + "..." if len(texte) > limite else texte
+
 def sauvegarder_feedback(question, reponse, feedback):
-    """Sauvegarde les feedbacks utilisateur."""
+    """Sauvegarde les feedbacks utilisateur (aperçus tronqués uniquement)."""
     try:
         feedback_data = {
             "timestamp": datetime.now().isoformat(),
-            "question": question,
-            "reponse_preview": reponse[:100] + "..." if len(reponse) > 100 else reponse,
+            "question_preview": _apercu_anonymise(question),
+            "reponse_preview": _apercu_anonymise(reponse),
             "feedback": feedback
         }
         

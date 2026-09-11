@@ -20,3 +20,6 @@ embeddings_cache.npz
 docker/openwa-sessions/
 docker/openwa-data/
 docker/openwa-logs/
+
+# Feedbacks locaux (données utilisateur, jamais commitées)
+feedback.json

@@ -93,6 +93,51 @@ class TestObtenirReponse:
         assert "aspirine" in results[0]["contenu"].lower()
 
 
+class TestOrientationSanitaire:
+    """Outil de sensibilisation : jamais de conseil médicamenteux,
+    toujours une orientation vers une structure sanitaire."""
+
+    @pytest.mark.parametrize(
+        "question",
+        [
+            "Mon enfant vient d'être mordu par un serpent, que faire ?",
+            "Ma fille a été mordue par un serpent",
+            "Il y a eu une morsure de serpent à la maison, premiers secours ?",
+            "Un serpent m'a mordu au champ",
+        ],
+    )
+    def test_urgence_serpent_oriente_vers_conduite_ems(self, question):
+        """Toute formulation d'urgence serpent renvoie la conduite EMS
+        (immobiliser, conduire au centre de santé)."""
+        results = rechercher_information(question)
+        assert results[0]["maladie"] == "ems"
+        assert results[0]["categorie"] == "conduite"
+        assert "centre de s" in results[0]["contenu"].lower()
+
+    def test_gravite_serpent_repond_a_la_question_de_gravite(self):
+        """« C'est grave ? » renvoie la gravité EMS (urgence médicale)."""
+        results = rechercher_information(
+            "Une piqûre de serpent, c'est grave ?"
+        )
+        assert results[0]["maladie"] == "ems"
+        assert results[0]["categorie"] == "gravite"
+
+    @pytest.mark.parametrize(
+        "question",
+        [
+            "Quel médicament prendre contre la dengue ?",
+            "Y a-t-il un remède contre la lèpre ?",
+            "Quel traitement pour la schistosomiase ?",
+        ],
+    )
+    def test_question_therapeutique_oriente_vers_conduite(self, question):
+        """Une question de traitement est orientée vers la conduite à tenir
+        (consultation), jamais vers un conseil de médicament."""
+        results = rechercher_information(question)
+        assert results[0]["categorie"] == "conduite"
+        assert results[0]["maladie"] != "inconnue"
+
+
 @pytest.mark.parametrize(
     "question,maladie_attendue",
     [

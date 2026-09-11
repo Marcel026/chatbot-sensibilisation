@@ -41,6 +41,14 @@ DEBUG = False  # Mode debug (affiche logs supplémentaires si True)
 SEUIL_SIMILARITE = 0.65  # Score minimum de similarité pour retourner un résultat
 MODELE_EMBEDDINGS = "all-MiniLM-L6-v2"
 
+# Catégorie servie par défaut quand la maladie est reconnue sans intention
+# explicite. L'EMS (morsure de serpent) est une urgence : la réponse par
+# défaut est la conduite à tenir (orientation vers un centre de santé),
+# jamais la définition.
+CATEGORIE_PAR_DEFAUT = {
+    "ems": "conduite",
+}
+
 # Cache d'embeddings pré-calculés, versionné dans le dépôt (models/embeddings_mtn.npz).
 # Régénérer avec : python scripts/build_embeddings.py
 EMBEDDINGS_PATH = (
@@ -57,6 +65,15 @@ SYNONYMES = {
     "shistosomiases": "schistosomiase",
     "morsure de serpent": "ems",
     "envenimation": "ems",
+    # Formes verbales d'urgence : une morsure ne doit jamais être
+    # un cas non reconnu (orientation immédiate vers la conduite EMS).
+    "mordu par un serpent": "ems",
+    "mordue par un serpent": "ems",
+    "mordu par le serpent": "ems",
+    "mordue par le serpent": "ems",
+    "serpent m'a mordu": "ems",
+    "serpent m'a mordue": "ems",
+    "piqûre de serpent": "ems",
     "symptomes": "symptomes",
     "signes": "symptomes"
 }
@@ -240,6 +257,8 @@ CATEGORY_BOOSTERS = {
         r"\bpremier soin\b",
         r"\bpremiers secours\b",
         r"\btraitement\b",
+        r"\bmédicaments?\b",
+        r"\bremèdes?\b",
         r"\bprise en charge\b"
     ],
     "gravite": [
@@ -479,8 +498,15 @@ def rechercher_information(question, top_k=3):
             if chunk["maladie"] == maladie_detectee
         ]
         if maladie_chunks:
+            categorie_defaut = CATEGORIE_PAR_DEFAUT.get(
+                maladie_detectee, "definition"
+            )
             fallback_chunk = next(
-                (chunk for chunk in maladie_chunks if chunk["categorie"] == "definition"),
+                (
+                    chunk
+                    for chunk in maladie_chunks
+                    if chunk["categorie"] == categorie_defaut
+                ),
                 maladie_chunks[0]
             )
             return [{
